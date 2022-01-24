@@ -1,0 +1,62 @@
+{% extends 'auctions/layout.html' %}
+
+{% block body %}    
+<div style="background-color: #1b1b1b; width: 76%; padding-top: 10px; padding-bottom: 20px; padding-left: 10px;padding-right: 10px; border-bottom:1.5px white solid;border-top: 1.5px white solid; text-align: center;">
+    <div>
+        <h2>{{listing.title}}</h2>
+    </div>
+    {% if can_close %}
+        <a class="btn btn-primary btn-sm" style="background-color: #2b2b2b; width: 125px; margin-right: 10px; margin-top: 7.5px;" href="{% url 'close' listing.id %}">Close Bidding</a>
+    {% elif not listing.listing_open and listing.listing_winner == request.user %}
+        <a class="btn btn btn-danger btn-sm" style="background-color: #2b2b2b; width: 125px; margin-right: 10px; margin-top: 7.5px;">You Won this Bidding</a>
+    {% elif not listing.listing_open and listing.listing_winner != request.user %}
+        <a class="btn btn btn-danger btn-sm" style="background-color: #2b2b2b; width: 125px; margin-right: 10px; margin-top: 7.5px; color: red;">Bidding is Closed</a>
+    {% else %}
+        <a class="btn btn btn-info btn-sm" style="background-color: #2b2b2b; width: 125px; margin-right: 10px; margin-top: 7.5px;">Bidding is Open</a>
+    {% endif%}
+</div><br>
+<div class="container bcontent" style="background-color: #1b1b1b;">
+    <br>      
+    <div class="card" style="margin-bottom: 10px; width: 100%; background-color: #1b1b1b;">
+        <div class="row no-gutters">
+            <div style="width: 40%;">
+                <img class="card-img-top" src="{{ listing.listing_img.url }}" alt="{{ listing.title }}" style="max-width: 300px; max-height: 400px">
+            </div>
+            <div class="col-sm-3 col-md-6 d-flex flex-column">
+                <div class="card-body ">
+                    <h6 class="card-title font-weight-bold">{{ listing.title }}   <span style="color:blue; font-style: italic" >(category: {{ category }})</span></h6>
+                    <p class="card-text">{% autoescape off %}{{ listing.listing_desc|linebreaks }}{% endautoescape %}</p>
+                    <hr style="background-color: white;">
+                    <p>Initial Bid : <strong>₹ {{ listing.starting_price|floatformat:2 }}</strong></p>
+                    {% if bid_count is not 0 %}
+                    <p>Current Bid: <strong>₹ {{ highest_bid|floatformat:2 }}</strong></p>
+                    {% endif %}
+                    <p>
+                        {{ bid_count }} bid(s) so far. 
+                        {% if you_are_on_top %}
+                            Your bid is the current bid.
+                        {% endif %}
+                    </p>
+                    <form method = "post" enctype="multipart/form-data"> 
+                        {% csrf_token %}
+                        <div class="float-left" style="width: 200px;  margin-left: 12.5%;">
+                            {{ bform }}
+                        </div>
+                        {% if listing.listing_open and listing.listing_owner != request.user %}
+                            <button class="btn btn-primary" type="submit">Validate Bid</button>
+                        {% endif %}
+                        {% if message %}
+                            <div class="alert alert-danger" role="alert" style="margin-top: 10px;">
+                                {{ message }}
+                            </div>
+                        {% endif %}
+                    </form>
+                    <p> </p>
+                    <p class="card-text small"><i>Created By : <span style="color:blue">{{ listing.listing_owner}}</span>  On: {{ listing.created_at }}</i></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock body %}

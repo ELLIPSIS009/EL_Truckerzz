@@ -1,0 +1,11 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+<form method = "post" enctype="multipart/form-data"> 
+    {% csrf_token %} 
+    {{ form }} 
+    <p style="margin-top: 25px;"><button class="btn btn-primary" type="submit" style="background-color: #2b2b2b; font-size: 20px; width: 150px;">Save Listing</button></p> 
+</form> 
+
+{% endblock %}

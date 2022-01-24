@@ -1,0 +1,39 @@
+{% extends "auctions/layout.html" %}
+{% block body %}
+    <h2>Loads of category:  {{category.cat_name}}</h2>
+    <hr>
+    {% for listing in listings %} 
+    <div class="container bcontent">
+        <div class="card" style="margin-bottom: 10px; width: 100%; background-color: #1b1b1b; padding: 10px;">
+            <div class="row no-gutters">
+                <div style="width: 40%;">
+                    <img class="card-img-top" src="{{ listing.listing_img.url }}" alt="{{ listing.title }}" style="max-width: 300px; max-height: 400px;">
+                </div>
+                <div style="width: 60%;">
+                    <div class="card-body ">
+                        <h6 class="card-title font-weight-bold">
+                            {{ listing.title }}
+                            {% if listing.listing_open %}
+                                <span style="color: blue; font-style: bold; font-size: smaller; margin-left: 20px;">
+                                </span>
+                            {% elif listing.listing_winner == request.user %}
+                                <span style="color: red; font-style: bold; font-size: smaller; margin-left: 20px;">
+                                    You won this Auction
+                                </span>
+                            {% else %}
+                                <span style="color: red; font-style: bold; font-size: smaller; margin-left: 20px;">
+                                </span>
+                                <p class="card-text small float-right" >won by: {{listing.listing_winner}}</p>
+                            {% endif %}
+                        </h6>
+                        <p class="card-text">{{ listing.listing_desc }}</p><br>
+                        <h6 class="card-title font-weight-bold"><a>Initial Price : ₹ {{ listing.starting_price}}</a></h6>
+                        <br><a href='{% url "listing" listing.id %}' class="card-link" style="font-size: 20px; padding: 10px; background-color: #303030; border-radius: 10px; border: 2px white solid;">Bid</a>
+                        <br><br><p class="card-text small align-self-end" style="flex-direction: column; padding-top: 10px;"><i>Created On: {{ listing.created_at }} By: <strong style="color: blue;">{{ listing.listing_owner }}</strong></i></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %} 
+{% endblock %}
